@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Pub Sites Web</title>
+<style>
+:root{--bg:#07070c;--fg:#f5f5f7;--muted:#a1a1b5;--a1:#7c5cff;--a2:#22d3ee;--a3:#c6ff4d;}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg);color:var(--fg);
+  font-family:'Inter Display','Inter',sans-serif;-webkit-font-smoothing:antialiased}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;background:var(--bg)}
+.abs{position:absolute}
+.center{left:0;right:0;text-align:center}
+.grad{background:linear-gradient(90deg,var(--a1),var(--a2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.big{font-size:124px;font-weight:800;letter-spacing:-0.045em;line-height:1.08}
+.h2{font-size:100px;font-weight:800;letter-spacing:-0.04em;line-height:1.1}
+.muted{color:var(--muted)}
+.blob{width:1000px;height:1000px;border-radius:50%;filter:blur(110px);opacity:.55}
+#grid{inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:90px 90px;
+  -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 30%,transparent 75%)}
+.line{display:block}
+
+/* Navigateur */
+#browser{left:80px;top:700px;width:920px;height:660px;border-radius:28px;overflow:hidden;background:#fbfbfd;
+  box-shadow:0 60px 120px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.08);transform-origin:50% 50%}
+#bar{height:56px;background:#16161f;display:flex;align-items:center;padding:0 22px;gap:12px}
+#bar i{width:16px;height:16px;border-radius:50%;display:block}
+#url{margin-left:auto;margin-right:auto;width:420px;height:32px;border-radius:16px;background:#262633;color:#b8b8c8;font:500 18px Inter;display:flex;align-items:center;justify-content:center;transform:translateX(-30px)}
+#body{position:relative;height:604px}
+.blk{position:absolute;border-radius:10px}
+.dark{background:#16162a}
+.soft{background:#dcdce6}
+.gradbg{background:linear-gradient(135deg,var(--a1),var(--a2))}
+.card{background:#fff;border-radius:18px;box-shadow:0 10px 30px rgba(20,20,60,.12);border:1px solid #ececf3}
+
+/* Téléphone */
+#phone{left:690px;top:770px;width:320px;height:650px;border-radius:52px;background:#fbfbfd;border:11px solid #1d1d26;
+  box-shadow:0 50px 100px rgba(0,0,0,.65),0 0 0 2px rgba(255,255,255,.08);overflow:hidden}
+#notch{left:50%;top:10px;width:100px;height:26px;margin-left:-50px;border-radius:14px;background:#1d1d26}
+
+/* Avantages */
+.feat{left:90px;width:900px;height:190px;border-radius:36px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  display:flex;align-items:center;gap:40px;padding:0 40px}
+.ico{width:110px;height:110px;border-radius:28px;flex:none;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--a1),var(--a2))}
+.ft{font-size:54px;font-weight:700;letter-spacing:-0.03em}
+.fs{font-size:32px;color:var(--muted);margin-top:6px;font-family:Inter}
+
+/* Graphique */
+#chart{left:90px;top:860px;width:900px;height:640px;border-radius:40px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1)}
+
+/* Fin */
+#logo{left:430px;top:600px;width:220px;height:220px;border-radius:64px;background:linear-gradient(135deg,var(--a1),var(--a2));
+  display:flex;align-items:center;justify-content:center;font:800 92px 'Inter Display';letter-spacing:-0.06em;box-shadow:0 30px 90px rgba(124,92,255,.55)}
+#cta{left:50%;top:1290px;transform:translateX(-50%)}
+#ctaIn{position:relative;overflow:hidden;white-space:nowrap;background:var(--a3);color:#0a0a0f;font:800 50px 'Inter Display';letter-spacing:-0.02em;padding:38px 70px;border-radius:999px;box-shadow:0 20px 70px rgba(198,255,77,.35)}
+#shine{position:absolute;top:0;bottom:0;width:120px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.8),transparent);transform:skewX(-20deg)}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="b1" class="abs blob" style="background:var(--a1)"></div>
+  <div id="b2" class="abs blob" style="background:var(--a2)"></div>
+  <div id="grid" class="abs"></div>
+
+  <!-- Scène 1 : accroche -->
+  <div id="s1" class="abs center" style="top:690px">
+    <span id="w1" class="line big">Votre business</span>
+    <span id="w2" class="line big">mérite</span>
+    <span id="w3" class="line big grad">un vrai site.</span>
+  </div>
+
+  <!-- Scène 2 : construction -->
+  <div id="c2a" class="abs center h2" style="top:330px"><span id="typed"></span><span id="caret" style="color:var(--a2)">|</span></div>
+  <div id="c2b" class="abs center h2 muted" style="top:450px">pixel par pixel.</div>
+
+  <div id="browser" class="abs">
+    <div id="bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><div id="url">votre-site.fr</div></div>
+    <div id="body">
+      <div id="nLogo" class="blk gradbg" style="left:40px;top:28px;width:44px;height:44px;border-radius:12px"></div>
+      <div id="nName" class="blk dark" style="left:98px;top:40px;width:130px;height:20px"></div>
+      <div id="nL1" class="blk soft" style="left:560px;top:42px;width:80px;height:16px"></div>
+      <div id="nL2" class="blk soft" style="left:660px;top:42px;width:80px;height:16px"></div>
+      <div id="nL3" class="blk gradbg" style="left:760px;top:34px;width:120px;height:32px;border-radius:16px"></div>
+      <div id="h1" class="blk dark" style="left:40px;top:130px;width:400px;height:40px"></div>
+      <div id="h2" class="blk dark" style="left:40px;top:186px;width:300px;height:40px"></div>
+      <div id="p1" class="blk soft" style="left:40px;top:252px;width:380px;height:16px"></div>
+      <div id="p2" class="blk soft" style="left:40px;top:280px;width:310px;height:16px"></div>
+      <div id="btn" class="blk gradbg" style="left:40px;top:322px;width:210px;height:60px;border-radius:30px;overflow:hidden;color:#fff;font:700 22px Inter;display:flex;align-items:center;justify-content:center">Contact
+        <div id="ripple" class="abs" style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.55)"></div></div>
+      <div id="img" class="blk gradbg" style="left:490px;top:120px;width:390px;height:262px;border-radius:22px;overflow:hidden">
+        <div class="abs" style="right:50px;top:40px;width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.85)"></div>
+        <svg class="abs" style="left:0;bottom:0" width="390" height="150" viewBox="0 0 390 150"><path d="M0 150 L110 50 L190 120 L270 30 L390 150 Z" fill="rgba(255,255,255,.35)"/></svg>
+      </div>
+      <div id="k1" class="blk card" style="left:40px;top:420px;width:260px;height:150px"><div class="blk gradbg" style="left:22px;top:22px;width:46px;height:46px;border-radius:12px"></div><div class="blk dark" style="left:22px;top:86px;width:160px;height:16px"></div><div class="blk soft" style="left:22px;top:114px;width:200px;height:12px"></div></div>
+      <div id="k2" class="blk card" style="left:330px;top:420px;width:260px;height:150px"><div class="blk gradbg" style="left:22px;top:22px;width:46px;height:46px;border-radius:12px"></div><div class="blk dark" style="left:22px;top:86px;width:160px;height:16px"></div><div class="blk soft" style="left:22px;top:114px;width:200px;height:12px"></div></div>
+      <div id="k3" class="blk card" style="left:620px;top:420px;width:260px;height:150px"><div class="blk gradbg" style="left:22px;top:22px;width:46px;height:46px;border-radius:12px"></div><div class="blk dark" style="left:22px;top:86px;width:160px;height:16px"></div><div class="blk soft" style="left:22px;top:114px;width:200px;height:12px"></div></div>
+      <svg id="cursor" class="abs" width="44" height="54" viewBox="0 0 22 27" style="left:0;top:0;transform-origin:0 0"><path d="M1 1 L1 22 L7 17 L11 26 L15 24 L11 16 L19 16 Z" fill="#0a0a0f" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>
+    </div>
+  </div>
+
+  <!-- Scène 3 : responsive -->
+  <div id="s3" class="abs center" style="top:300px">
+    <span id="r1" class="line h2">Sur ordi.</span>
+    <span id="r2" class="line h2">Sur mobile.</span>
+    <span id="r3" class="line h2 grad">Partout.</span>
+  </div>
+  <div id="phone" class="abs">
+    <div id="notch" class="abs"></div>
+    <div class="blk gradbg" style="left:22px;top:54px;width:34px;height:34px;border-radius:10px"></div>
+    <div class="blk soft" style="left:220px;top:64px;width:56px;height:14px"></div>
+    <div class="blk gradbg" style="left:22px;top:110px;width:254px;height:170px;border-radius:18px"></div>
+    <div class="blk dark" style="left:22px;top:304px;width:230px;height:30px"></div>
+    <div class="blk dark" style="left:22px;top:344px;width:170px;height:30px"></div>
+    <div class="blk soft" style="left:22px;top:394px;width:240px;height:12px"></div>
+    <div class="blk soft" style="left:22px;top:416px;width:200px;height:12px"></div>
+    <div class="blk gradbg" style="left:22px;top:450px;width:160px;height:48px;border-radius:24px"></div>
+    <div class="blk card" style="left:22px;top:522px;width:254px;height:100px"><div class="blk gradbg" style="left:18px;top:18px;width:40px;height:40px;border-radius:10px"></div><div class="blk dark" style="left:74px;top:26px;width:130px;height:14px"></div><div class="blk soft" style="left:74px;top:50px;width:150px;height:10px"></div></div>
+  </div>
+
+  <!-- Scène 4 : avantages -->
+  <div id="c4" class="abs center h2" style="top:400px">Ce que vous <span class="grad">obtenez</span></div>
+  <div id="f1" class="abs feat" style="top:640px"><div class="ico"><svg width="58" height="58" viewBox="0 0 56 56"><path d="M28 4 L33 23 L52 28 L33 33 L28 52 L23 33 L4 28 L23 23 Z" fill="#fff"/></svg></div><div><div class="ft">Design sur mesure</div><div class="fs">À l'image de votre marque</div></div></div>
+  <div id="f2" class="abs feat" style="top:860px"><div class="ico"><svg width="58" height="58" viewBox="0 0 56 56"><path d="M32 4 L10 32 H27 L22 52 L46 22 H29 Z" fill="#fff"/></svg></div><div><div class="ft">Rapide &amp; mobile</div><div class="fs">Parfait sur tous les écrans</div></div></div>
+  <div id="f3" class="abs feat" style="top:1080px"><div class="ico"><svg width="58" height="58" viewBox="0 0 56 56" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"><circle cx="24" cy="24" r="14"/><path d="M35 35 L49 49"/></svg></div><div><div class="ft">Visible sur Google</div><div class="fs">Optimisé pour le référencement</div></div></div>
+  <div id="f4" class="abs feat" style="top:1300px"><div class="ico"><svg width="58" height="58" viewBox="0 0 56 56" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 29 L23 42 L46 15"/></svg></div><div><div class="ft">Clé en main</div><div class="fs">On s'occupe de tout, de A à Z</div></div></div>
+
+  <!-- Scène 5 : croissance -->
+  <div id="s5" class="abs center" style="top:420px">
+    <span id="g1" class="line h2">Plus de visibilité.</span>
+    <span id="g2" class="line h2 grad">Plus de clients.</span>
+  </div>
+  <div id="chart" class="abs">
+    <svg width="900" height="640" viewBox="0 0 900 640">
+      <defs>
+        <linearGradient id="lg" x1="0" x2="1"><stop offset="0" stop-color="#7c5cff"/><stop offset="1" stop-color="#22d3ee"/></linearGradient>
+        <linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#22d3ee" stop-opacity=".35"/><stop offset="1" stop-color="#7c5cff" stop-opacity="0"/></linearGradient>
+      </defs>
+      <g stroke="rgba(255,255,255,.08)" stroke-width="2"><path d="M50 160 H850"/><path d="M50 280 H850"/><path d="M50 400 H850"/><path d="M50 520 H850"/></g>
+      <path id="area" d="M50 540 C 150 530, 200 480, 280 490 S 410 400, 480 420 S 610 280, 690 270 S 810 160, 850 120 L850 580 L50 580 Z" fill="url(#ag)"/>
+      <path id="curve" d="M50 540 C 150 530, 200 480, 280 490 S 410 400, 480 420 S 610 280, 690 270 S 810 160, 850 120" fill="none" stroke="url(#lg)" stroke-width="10" stroke-linecap="round"/>
+      <circle id="ring" cx="850" cy="120" r="20" fill="none" stroke="#22d3ee" stroke-width="4"/>
+      <circle id="dot" cx="850" cy="120" r="16" fill="#fff"/>
+    </svg>
+    <div id="badge" class="abs" style="left:60px;top:50px;background:var(--a3);color:#0a0a0f;font:800 34px 'Inter Display';padding:14px 28px;border-radius:999px">↑ Croissance</div>
+  </div>
+
+  <!-- Scène 6 : appel à l'action -->
+  <div id="logo" class="abs">&lt;/&gt;</div>
+  <div id="e1" class="abs center big" style="top:900px">Votre site internet,</div>
+  <div id="e2" class="abs center big grad" style="top:1040px">clé en main.</div>
+  <div id="cta" class="abs"><div id="ctaIn">Demandez votre devis →<div id="shine"></div></div></div>
+  <div id="contact" class="abs center" style="top:1470px;font:600 40px Inter;color:var(--muted)"></div>
+</div>
+
+<script>
+// Textes modifiables
+const CONFIG = { contact: "" }; // ex. "contact@monsite.fr · 06 00 00 00 00"
+document.getElementById('contact').textContent = CONFIG.contact;
+
+const DURATION = 20;
+const $ = id => document.getElementById(id);
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const eOut = x => 1 - Math.pow(1 - x, 3);
+const eIn = x => x * x * x;
+const eInOut = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const eBack = x => { const c = 1.7, c3 = c + 1; return 1 + c3 * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const lerp = (a, b, x) => a + (b - a) * x;
+
+// Entrée / sortie générique d'un élément
+function anim(el, t, o) {
+  const pi = o.i === undefined ? 1 : (o.ease || eOut)(prog(t, o.i, o.i + (o.d || .55)));
+  const po = o.o === undefined ? 0 : eIn(prog(t, o.o, o.o + (o.od || .4)));
+  const op = Math.min(pi * 1.4, 1) * (1 - po);
+  const dx = (1 - pi) * (o.dx || 0) + po * (o.odx || 0);
+  const dy = (1 - pi) * (o.dy ?? 60) + po * (o.ody ?? -60);
+  const s = 1 - (1 - pi) * (o.s || 0) - po * (o.os || 0);
+  const bl = (1 - pi) * (o.blur ?? 10) + po * (o.oblur ?? 10);
+  el.style.opacity = op;
+  el.style.visibility = op < .002 ? 'hidden' : 'visible';
+  el.style.transform = (o.base || '') + ` translate(${dx}px,${dy}px) scale(${s})`;
+  el.style.filter = bl > .1 ? `blur(${bl}px)` : 'none';
+}
+// Barre qui "pousse" depuis la gauche
+function grow(el, t, a) {
+  const p = eOut(prog(t, a, a + .45));
+  el.style.transformOrigin = '0 50%';
+  el.style.transform = `scaleX(${p})`;
+  el.style.opacity = p > 0 ? 1 : 0;
+}
+
+const curve = $('curve'), curveLen = curve.getTotalLength();
+curve.style.strokeDasharray = curveLen;
+const typedText = 'On le conçoit.';
+
+function render(t) {
+  // Fond vivant
+  $('b1').style.transform = `translate(${-300 + 220 * Math.sin(t * .5)}px, ${-200 + 260 * Math.cos(t * .4)}px)`;
+  $('b2').style.transform = `translate(${400 + 200 * Math.cos(t * .45)}px, ${1100 + 240 * Math.sin(t * .35)}px)`;
+
+  // Scène 1
+  const s1o = { o: 2.75, od: .4, ody: -120 };
+  anim($('w1'), t, { i: .15, s: .15, dy: 90, ...s1o });
+  anim($('w2'), t, { i: .65, s: .15, dy: 90, ...s1o, o: 2.8 });
+  anim($('w3'), t, { i: 1.15, s: .25, dy: 90, ease: eBack, ...s1o, o: 2.85 });
+
+  // Scène 2 : texte tapé
+  const n = Math.round(prog(t, 3.25, 4.1) * typedText.length);
+  $('typed').textContent = typedText.slice(0, n);
+  $('caret').style.opacity = (t > 3.1 && t < 7.0 && (Math.floor(t * 2.5) % 2 === 0 || n < typedText.length)) ? 1 : 0;
+  anim($('c2a'), t, { i: 3.1, d: .2, dy: 0, blur: 0, o: 6.85 });
+  anim($('c2b'), t, { i: 4.5, o: 6.9 });
+
+  // Navigateur : entrée, puis réduction à gauche (scène 3), puis sortie
+  const bIn = eBack(prog(t, 3.0, 3.6));
+  const bMove = eInOut(prog(t, 6.9, 7.7));
+  const bOut = eIn(prog(t, 10.35, 10.85));
+  const br = $('browser');
+  br.style.opacity = Math.min(bIn * 1.5, 1) * (1 - bOut);
+  br.style.visibility = (t < 3 || t > 10.9) ? 'hidden' : 'visible';
+  const bFloat = Math.sin(t * 1.6) * 8 * bMove;
+  br.style.transform = `translate(${-190 * bMove}px, ${(1 - bIn) * 200 + 70 * bMove + bFloat + bOut * 500}px) scale(${(0.7 + 0.3 * bIn) * (1 - 0.38 * bMove)}) rotate(${-3 * bMove}deg)`;
+
+  // Construction du site, élément par élément
+  [['nLogo', 3.55], ['nL3', 3.75]].forEach(([id, a]) => anim($(id), t, { i: a, d: .4, dy: 20, s: .5, blur: 0 }));
+  [['nName', 3.6], ['nL1', 3.65], ['nL2', 3.7], ['h1', 3.85], ['h2', 4.0], ['p1', 4.15], ['p2', 4.25]].forEach(([id, a]) => grow($(id), t, a));
+  anim($('btn'), t, { i: 4.4, d: .5, dy: 30, s: .4, blur: 0, ease: eBack });
+  anim($('img'), t, { i: 4.2, d: .6, dy: 60, s: .2, blur: 0, ease: eBack });
+  ['k1', 'k2', 'k3'].forEach((id, i) => anim($(id), t, { i: 4.7 + i * .15, d: .5, dy: 80, blur: 0, ease: eBack }));
+
+  // Curseur qui clique sur le bouton
+  const cm = eInOut(prog(t, 5.15, 5.85));
+  const click = prog(t, 5.9, 6.05) - prog(t, 6.05, 6.25);
+  const cur = $('cursor');
+  cur.style.opacity = prog(t, 5.0, 5.2) * (1 - prog(t, 6.6, 6.8));
+  cur.style.transform = `translate(${lerp(760, 150, cm)}px, ${lerp(560, 352, cm) + Math.sin(cm * Math.PI) * -60}px) scale(${1 - .18 * click})`;
+  const rp = prog(t, 5.95, 6.6);
+  const rip = $('ripple');
+  rip.style.left = (110 - 20) + 'px'; rip.style.top = (30 - 20) + 'px';
+  rip.style.transform = `scale(${1 + rp * 9})`;
+  rip.style.opacity = rp > 0 && rp < 1 ? (1 - rp) : 0;
+  $('btn').style.filter = `brightness(${1 + .25 * (1 - Math.abs(prog(t, 5.9, 6.5) * 2 - 1)) * (t > 5.9 && t < 6.5 ? 1 : 0)})`;
+
+  // Scène 3 : téléphone + texte
+  anim($('r1'), t, { i: 7.5, o: 10.3 });
+  anim($('r2'), t, { i: 7.95, o: 10.35 });
+  anim($('r3'), t, { i: 8.4, s: .2, ease: eBack, o: 10.4 });
+  const ph = $('phone');
+  const pIn = eBack(prog(t, 7.3, 8.05)), pOut = eIn(prog(t, 10.35, 10.85));
+  ph.style.opacity = Math.min(prog(t, 7.3, 7.6) * 1, 1) * (1 - pOut);
+  ph.style.visibility = (t < 7.3 || t > 10.9) ? 'hidden' : 'visible';
+  ph.style.transform = `translate(${(1 - pIn) * 300}px, ${(1 - pIn) * 900 + Math.sin(t * 1.6 + 1.5) * 10 + 60 + pOut * 600}px) rotate(${(1 - pIn) * 18 + 4}deg)`;
+
+  // Scène 4 : avantages
+  anim($('c4'), t, { i: 10.85, o: 13.95 });
+  ['f1', 'f2', 'f3', 'f4'].forEach((id, i) => anim($(id), t, { i: 11.2 + i * .28, d: .6, dx: 260, dy: 0, blur: 8, ease: eBack, o: 13.9 + i * .06, odx: -260, ody: 0 }));
+
+  // Scène 5 : croissance
+  anim($('g1'), t, { i: 14.3, o: 16.95 });
+  anim($('g2'), t, { i: 14.7, s: .2, ease: eBack, o: 17.0 });
+  anim($('chart'), t, { i: 14.5, d: .6, dy: 120, blur: 0, o: 16.95, ody: 200 });
+  const cp = eInOut(prog(t, 14.9, 16.1));
+  curve.style.strokeDashoffset = curveLen * (1 - cp);
+  $('area').style.opacity = cp;
+  const dp = eBack(prog(t, 16.0, 16.35));
+  $('dot').setAttribute('r', 16 * dp);
+  const rg = (t - 16.1) % 0.9 / 0.9;
+  $('ring').setAttribute('r', 16 + 40 * rg);
+  $('ring').style.opacity = t > 16.1 ? (1 - rg) : 0;
+  anim($('badge'), t, { i: 15.6, d: .45, dy: 30, s: .5, blur: 0, ease: eBack });
+
+  // Scène 6 : appel à l'action
+  anim($('logo'), t, { i: 17.15, d: .7, dy: 0, s: 1, blur: 0, ease: eBack });
+  $('logo').style.transform += ` rotate(${(1 - eOut(prog(t, 17.15, 17.9))) * -90}deg)`;
+  anim($('e1'), t, { i: 17.55 });
+  anim($('e2'), t, { i: 17.85, s: .2, ease: eBack });
+  anim($('cta'), t, { i: 18.3, d: .6, dy: 80, s: .4, blur: 0, ease: eBack, base: 'translateX(-50%)' });
+  const ctaPulse = t > 19 ? 1 + .03 * Math.sin((t - 19) * 6) : 1;
+  $('ctaIn').style.transform = `scale(${ctaPulse})`;
+  $('shine').style.left = lerp(-200, 900, eInOut(prog(t, 18.9, 19.6))) + 'px';
+  anim($('contact'), t, { i: 18.7 });
+}
+window.render = render;
+window.DURATION = DURATION;
+render(new URLSearchParams(location.search).has('t') ? +new URLSearchParams(location.search).get('t') : 19.9);
+</script>
+</body>
+</html>
