@@ -2,3 +2,4 @@ node_modules/
 build/
 models/
 src/test-photos.html
+__pycache__/
