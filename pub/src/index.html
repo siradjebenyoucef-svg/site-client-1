@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Pub Site Internet Clé en Main</title>
+<style>
+@font-face { font-family: 'Mona'; src: url(fonts/MonaSans.woff2) format('woff2'); font-weight: 200 900; font-stretch: 75% 125%; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+#stage { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: hidden; background: #000; }
+#gl { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+.layer { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; pointer-events: none; }
+#shade { background: linear-gradient(to bottom, rgba(0,0,0,.82) 0%, rgba(0,0,0,.55) 30%, rgba(0,0,0,0) 52%); opacity: 0; }
+#type { font-family: 'Mona', sans-serif; font-weight: 900; color: #fff; }
+.stack, .stack-inner { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; transform-origin: 540px 700px; }
+.line { position: absolute; left: 0; width: 1080px; text-align: center; white-space: nowrap; line-height: 1; letter-spacing: -0.012em; }
+.w { display: inline-block; vertical-align: top; }
+.wi { display: inline-block; transform-origin: 50% 55%; text-shadow: 0 8px 36px rgba(0,0,0,.6); will-change: transform; }
+.wi.green { color: #16ff6e; }
+.b3 .wi:not(.green), .b4 .wi:not(.green) { text-shadow: 0 0 26px rgba(0,0,0,.9), 0 4px 18px rgba(0,0,0,.85); }
+.wi.pill { color: #000; background: #16ff6e; border-radius: .2em; padding: .05em .16em .02em; box-shadow: 0 0 60px rgba(22,255,110,.55), 0 0 140px rgba(22,255,110,.3); text-shadow: none; }
+#flash { background: #fff; opacity: 0; }
+#wipe { opacity: 1; }
+#grain { opacity: .05; }
+svg.defs { position: absolute; width: 0; height: 0; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="gl" width="1080" height="1920"></canvas>
+  <div id="shade" class="layer"></div>
+  <div id="hud" class="layer"></div>
+  <div id="type" class="layer"></div>
+  <div id="wipe" class="layer"></div>
+  <div id="flash" class="layer"></div>
+  <canvas id="grain" class="layer" width="540" height="960"></canvas>
+</div>
+<svg class="defs"><defs id="defs"></defs></svg>
+<script type="importmap">{ "imports": { "three": "/three/build/three.module.js", "three/addons/": "/three/examples/jsm/" } }</script>
+<script type="module" src="main.js"></script>
+</body>
+</html>
