@@ -81,7 +81,7 @@ async function shot(page, t, frame) {
       if (adaptive) {
         // flou de bougé seulement sur les passages rapides : 3 sous-images moyennées (obturateur 180°)
         const tf = f / fps;
-        const n = FAST.some(([a, b]) => tf >= a && tf <= b) ? 3 : 1;
+        const n = FAST.some(([a, b]) => tf >= a && tf <= b) ? 2 : 1;
         let buf;
         if (n === 1) buf = await shot(page, tf, f);
         else {
