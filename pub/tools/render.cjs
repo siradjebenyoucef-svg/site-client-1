@@ -73,8 +73,29 @@ async function shot(page, t, frame) {
     args.push('-r', String(fps), '-c:v', 'libx264', '-preset', 'medium', '-crf', '12', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', out);
     const ff = spawn('ffmpeg', args, { stdio: ['pipe', 'inherit', 'inherit'] });
     const t0 = Date.now();
+    const adaptive = rest.includes('--blur');
+    const FAST = adaptive ? await page.evaluate(() => window.FAST) : [];
+    const { PNG } = require('pngjs');
     for (let f = f0; f < f1; f++) {
-      for (let s = 0; s < sub; s++) {
+      if (adaptive) {
+        // flou de bougé seulement sur les passages rapides : 3 sous-images moyennées (obturateur 180°)
+        const tf = f / fps;
+        const n = FAST.some(([a, b]) => tf >= a && tf <= b) ? 3 : 1;
+        let buf;
+        if (n === 1) buf = await shot(page, tf, f);
+        else {
+          let acc = null, img = null;
+          for (let s = 0; s < n; s++) {
+            const t = (f + ((s + .5) / n - .5) * .5) / fps;
+            img = PNG.sync.read(await shot(page, Math.max(0, t), f));
+            if (!acc) acc = new Float32Array(img.data.length);
+            for (let i = 0; i < acc.length; i++) acc[i] += img.data[i];
+          }
+          for (let i = 0; i < acc.length; i++) img.data[i] = acc[i] / n + .5;
+          buf = PNG.sync.write(img, { deflateLevel: 1 });
+        }
+        if (!ff.stdin.write(buf)) await new Promise(r => ff.stdin.once('drain', r));
+      } else for (let s = 0; s < sub; s++) {
         // obturateur à 180° : sous-images centrées sur l'instant de l'image
         const t = (f + ((s + .5) / sub - .5) * .5) / fps;
         const buf = await shot(page, Math.max(0, t), f);

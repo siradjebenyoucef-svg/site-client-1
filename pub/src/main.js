@@ -151,6 +151,9 @@ async function boot() {
   };
 
   window.DURATION = DURATION; // (mis à jour par setWords si timings.json est présent)
+  // passages rapides où l'on calcule un vrai flou de bougé (plusieurs sous-images par image)
+  window.FAST = [[T.pendant - .1, T.vos1 + .15], [T.google + .3, T.site2 + .35], [T.cle - .05, T.cle + .3],
+    [T.un - .12, T.un + .3], [T.moderne - .05, T.moderne + .35], [T.devis - .22, T.devis + .15]];
   window.FPS = FPS;
   window.ready = true;
 }

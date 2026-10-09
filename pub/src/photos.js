@@ -1,6 +1,8 @@
 // "Photos" noir et blanc générées par le code : viennoiseries et pains modélisés en 3D,
 // éclairés comme en studio, puis développés (grain, vignettage) dans des canvas.
 import * as THREE from 'three';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { rng } from './timeline.js';
 
 function noise3(R) {
@@ -152,6 +154,8 @@ export function makePhotos(renderer) {
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x101010);
+  scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), .04).texture;
+  scene.environmentIntensity = .35;
   const table = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.MeshStandardMaterial({ map: woodTex(R), roughness: .7 }));
   table.material.map.repeat.set(3, 3);
   table.rotation.x = -Math.PI / 2; table.receiveShadow = true; scene.add(table);
@@ -166,6 +170,108 @@ export function makePhotos(renderer) {
     const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.rotation.y = ry; m.scale.setScalar(s);
     m.castShadow = true; m.receiveShadow = true; group.add(m); return m;
   };
+  const M = (color, o = {}) => new THREE.MeshPhysicalMaterial({ color, roughness: .5, metalness: 0, ...o });
+  const mat = {
+    paint: M(0x161616, { metalness: .6, roughness: .22, clearcoat: 1, clearcoatRoughness: .05, envMapIntensity: 2.2 }),
+    glass: M(0x030303, { roughness: .05, metalness: .2, clearcoat: 1, envMapIntensity: 2.5 }),
+    tire: M(0x141414, { roughness: .9 }), rim: M(0xcfcfcf, { metalness: 1, roughness: .18, envMapIntensity: 2 }),
+    steel: M(0xc8c8c8, { metalness: 1, roughness: .28, envMapIntensity: 2 }), rubber: M(0x232323, { roughness: .7 }),
+    wood: M(0x8c8c8c, { roughness: .6, map: crustTex(R) }), light: M(0xffffff, { emissive: 0xffffff, emissiveIntensity: 2 }),
+    bun: M(0xb4b4b4, { roughness: .45, map: crustTex(R) }), patty: M(0x353535, { roughness: .85, map: crustTex(R, .3) }),
+    cheese: M(0xe2e2e2, { roughness: .3 }), salad: M(0x9c9c9c, { roughness: .55 }), tomato: M(0x6e6e6e, { roughness: .25 }),
+    plate: M(0xf2f2f2, { roughness: .15, clearcoat: 1 }), sesame: M(0xf0f0f0, { roughness: .4 }),
+    dough: M(0xc6c6c6, { roughness: .6, map: crustTex(R, .4) }), sauce: M(0x575757, { roughness: .35 }),
+    pep: M(0x333333, { roughness: .4 }), carton: M(0x1c1c1c, { roughness: .6 }), band: M(0xe8e8e8, { roughness: .5 }),
+    fry: M(0xd6d6d6, { roughness: .55, map: crustTex(R) }), tape: M(0xe6e6e6, { roughness: .4 }),
+  };
+  const G = new THREE.Group();
+  const part = (geo, m, x, y, z, parent) => { const o = new THREE.Mesh(geo, m); o.position.set(x, y, z); o.castShadow = o.receiveShadow = true; (parent || group).add(o); return o; };
+  function car(x, z, ry, sc = 1) {
+    const c = new THREE.Group(); c.position.set(x, 0, z); c.rotation.y = ry; c.scale.setScalar(sc); group.add(c);
+    part(new RoundedBoxGeometry(4.6, .78, 2.0, 6, .32), mat.paint, 0, .78, 0, c);
+    part(new RoundedBoxGeometry(2.5, .78, 1.78, 6, .36), mat.glass, -.25, 1.42, 0, c);
+    part(new RoundedBoxGeometry(2.2, .12, 1.7, 4, .06), mat.paint, -.3, 1.83, 0, c);
+    part(new RoundedBoxGeometry(.08, .2, 1.4, 2, .04), mat.rubber, 2.3, .7, 0, c);
+    for (const zz of [-.72, .72]) part(new RoundedBoxGeometry(.12, .14, .42, 2, .05), mat.light, 2.28, .92, zz, c);
+    for (const [wx, wz] of [[1.45, 1.0], [-1.45, 1.0], [1.45, -1.0], [-1.45, -1.0]]) {
+      const t = part(new THREE.TorusGeometry(.42, .2, 16, 40), mat.tire, wx, .55, wz, c);
+      const r = part(new THREE.CylinderGeometry(.34, .34, .14, 28), mat.rim, wx, .55, wz + Math.sign(wz) * .06, c); r.rotation.x = Math.PI / 2;
+      void t;
+    }
+    return c;
+  }
+  function wheel(x, y, z, ry, sc = 1) {
+    const w = new THREE.Group(); w.position.set(x, y, z); w.rotation.y = ry; w.scale.setScalar(sc); group.add(w);
+    part(new THREE.TorusGeometry(1.05, .48, 24, 64), mat.tire, 0, 0, 0, w);
+    const rim = part(new THREE.CylinderGeometry(.9, .9, .3, 48), mat.rim, 0, 0, 0, w); rim.rotation.x = Math.PI / 2;
+    for (let i = 0; i < 5; i++) { const sp = part(new THREE.BoxGeometry(.16, .82, .12), mat.steel, 0, 0, .2, w); sp.rotation.z = i * Math.PI * 2 / 5; sp.position.set(Math.sin(i * Math.PI * 2 / 5) * .4, Math.cos(i * Math.PI * 2 / 5) * .4, .2); }
+    const cap = part(new THREE.CylinderGeometry(.22, .22, .3, 24), mat.steel, 0, 0, .22, w); cap.rotation.x = Math.PI / 2;
+    return w;
+  }
+  function wrench(x, z, ry, sc = 1) {
+    const w = new THREE.Group(); w.position.set(x, .1, z); w.rotation.y = ry; w.scale.setScalar(sc); group.add(w);
+    part(new RoundedBoxGeometry(3.2, .12, .42, 3, .05), mat.steel, 0, 0, 0, w);
+    const h1 = part(new THREE.TorusGeometry(.42, .16, 12, 32, Math.PI * 1.55), mat.steel, 1.9, 0, 0, w); h1.rotation.set(-Math.PI / 2, 0, Math.PI * .22);
+    const h2 = part(new THREE.TorusGeometry(.36, .14, 12, 32), mat.steel, -1.85, 0, 0, w); h2.rotation.x = -Math.PI / 2;
+    return w;
+  }
+  function hammer(x, z, ry, sc = 1) {
+    const h = new THREE.Group(); h.position.set(x, .22, z); h.rotation.y = ry; h.scale.setScalar(sc); group.add(h);
+    const handle = part(new THREE.CylinderGeometry(.14, .17, 3.4, 16), mat.wood, 0, 0, 0, h); handle.rotation.z = Math.PI / 2;
+    const grip = part(new THREE.CylinderGeometry(.2, .2, 1.2, 16), mat.rubber, -1.1, 0, 0, h); grip.rotation.z = Math.PI / 2;
+    part(new RoundedBoxGeometry(.5, .5, 1.5, 3, .06), mat.steel, 1.75, .02, .1, h);
+    return h;
+  }
+  function screwdriver(x, z, ry, sc = 1) {
+    const d = new THREE.Group(); d.position.set(x, .2, z); d.rotation.y = ry; d.scale.setScalar(sc); group.add(d);
+    const hd = part(new THREE.CylinderGeometry(.22, .2, 1.2, 8), mat.rubber, -.8, 0, 0, d); hd.rotation.z = Math.PI / 2;
+    const sh = part(new THREE.CylinderGeometry(.06, .06, 1.7, 12), mat.steel, .65, 0, 0, d); sh.rotation.z = Math.PI / 2;
+    part(new THREE.BoxGeometry(.18, .03, .1), mat.steel, 1.52, 0, 0, d);
+    return d;
+  }
+  function tapeMeasure(x, z, ry, sc = 1) {
+    const t = new THREE.Group(); t.position.set(x, .5, z); t.rotation.y = ry; t.scale.setScalar(sc); group.add(t);
+    part(new RoundedBoxGeometry(1.2, 1.2, .55, 5, .22), mat.rubber, 0, 0, 0, t);
+    const c = part(new THREE.CylinderGeometry(.32, .32, .6, 24), mat.steel, 0, 0, 0, t); c.rotation.x = Math.PI / 2;
+    part(new THREE.BoxGeometry(2.4, .02, .26), mat.tape, 1.6, -.48, 0, t);
+    return t;
+  }
+  function burger(x, z, sc = 1) {
+    const b = new THREE.Group(); b.position.set(x, 0, z); b.scale.setScalar(sc); group.add(b);
+    const bot = part(new THREE.SphereGeometry(1.6, 64, 32), mat.bun, 0, .32, 0, b); bot.scale.y = .26;
+    const pg = new THREE.CylinderGeometry(1.75, 1.75, .44, 64, 4); { const p = pg.attributes.position, v = new THREE.Vector3(); for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i); const k = 1 + .05 * n(v.x * 3, v.y * 3, v.z * 3); p.setXYZ(i, v.x * k, v.y, v.z * k); } pg.computeVertexNormals(); }
+    part(pg, mat.patty, 0, .74, 0, b);
+    const cg = new THREE.BoxGeometry(3.3, .05, 3.3, 30, 1, 30); { const p = cg.attributes.position, v = new THREE.Vector3(); for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i); const d = Math.hypot(v.x, v.z); if (d > 1.55) v.y -= (d - 1.55) * .7; p.setXYZ(i, v.x, v.y, v.z); } cg.computeVertexNormals(); }
+    part(cg, mat.cheese, 0, 1.0, 0, b).rotation.y = Math.PI / 4;
+    const lg = new THREE.CylinderGeometry(1.95, 1.95, .07, 120, 1); { const p = lg.attributes.position, v = new THREE.Vector3(); for (let i = 0; i < p.count; i++) { v.fromBufferAttribute(p, i); const a = Math.atan2(v.z, v.x), d = Math.hypot(v.x, v.z); if (d > .1) { const k = 1 + .08 * Math.sin(a * 11); v.x *= k; v.z *= k; v.y += Math.sin(a * 7) * .07 * (d / 1.95); } p.setXYZ(i, v.x, v.y, v.z); } lg.computeVertexNormals(); }
+    part(lg, mat.salad, 0, 1.08, 0, b);
+    part(new THREE.CylinderGeometry(.85, .85, .14, 32), mat.tomato, .5, 1.17, .2, b); part(new THREE.CylinderGeometry(.8, .8, .14, 32), mat.tomato, -.6, 1.16, -.3, b);
+    const top = part(new THREE.SphereGeometry(1.72, 64, 32, 0, Math.PI * 2, 0, Math.PI / 2), mat.bun, 0, 1.22, 0, b); top.scale.y = .66;
+    for (let i = 0; i < 46; i++) {
+      const th = R() * Math.PI * 2, ph = Math.acos(1 - R() * .82);
+      const sx = Math.sin(ph) * Math.cos(th) * 1.72, sz = Math.sin(ph) * Math.sin(th) * 1.72, sy = Math.cos(ph) * 1.72 * .66 + 1.22;
+      const sd = part(new THREE.SphereGeometry(.07, 8, 6), mat.sesame, sx, sy, sz, b); sd.scale.set(.7, .45, 1.4); sd.rotation.y = R() * 3;
+    }
+    return b;
+  }
+  function plate(x, z, r = 3.2) { part(new THREE.CylinderGeometry(r, r * .86, .14, 96), mat.plate, x, .07, z); }
+  function pizza(x, z, sc = 1) {
+    const p = new THREE.Group(); p.position.set(x, 0, z); p.scale.setScalar(sc); group.add(p);
+    part(new THREE.CylinderGeometry(2.7, 2.7, .1, 96), mat.dough, 0, .08, 0, p);
+    const cr = part(new THREE.TorusGeometry(2.58, .22, 16, 96), mat.dough, 0, .16, 0, p); cr.rotation.x = Math.PI / 2;
+    part(new THREE.CylinderGeometry(2.42, 2.42, .03, 96), mat.sauce, 0, .15, 0, p);
+    for (let i = 0; i < 22; i++) { const a = R() * Math.PI * 2, d = Math.sqrt(R()) * 2.1; const c = part(new THREE.SphereGeometry(.42 + R() * .25, 16, 10), mat.cheese, Math.cos(a) * d, .17, Math.sin(a) * d, p); c.scale.y = .12; }
+    for (let i = 0; i < 9; i++) { const a = i / 9 * Math.PI * 2 + R() * .3, d = i % 3 === 0 ? .6 : 1.6; part(new THREE.CylinderGeometry(.34, .34, .05, 24), mat.pep, Math.cos(a) * d, .22, Math.sin(a) * d, p); }
+    return p;
+  }
+  function fries(x, z, sc = 1) {
+    const f = new THREE.Group(); f.position.set(x, 0, z); f.scale.setScalar(sc); group.add(f);
+    const box = part(new THREE.CylinderGeometry(1.0, .72, 1.7, 4, 1, true), mat.carton, 0, .85, 0, f); box.rotation.y = Math.PI / 4; box.material.side = THREE.DoubleSide;
+    const band = part(new THREE.CylinderGeometry(.92, .84, .4, 4, 1, true), mat.band, 0, .9, 0, f); band.rotation.y = Math.PI / 4; band.scale.setScalar(1.02);
+    for (let i = 0; i < 30; i++) { const fr = part(new THREE.BoxGeometry(.13, 1.7, .13), mat.fry, (R() - .5) * 1.0, 1.55 + R() * .35, (R() - .5) * 1.0, f); fr.rotation.set((R() - .5) * .5, R() * 3, (R() - .5) * .5); }
+    return f;
+  }
+
   const shots = {
     hero: { w: 1400, h: 640, cam: [0, 5.2, 9.5], look: [0, .4, 0], fov: 34, build() {
       mk(geos.baguette, crust, -1.2, .45, -1.4, .35, 1);
@@ -178,6 +284,18 @@ export function makePhotos(renderer) {
     croissant: { w: 520, h: 400, cam: [0, 4.6, 5.4], look: [0, .3, -.1], fov: 36, build() { mk(geos.croissant, glazed, 0, .32, .3, 0, 1.1); } },
     baguette: { w: 520, h: 400, cam: [0, 5.4, 6.4], look: [0, .3, 0], fov: 38, build() { mk(geos.baguette, crust, 0, .45, -.5, .5, 1); mk(geos.baguette, crust, .2, .45, .7, .42, 1); } },
     boule: { w: 520, h: 400, cam: [0, 4.4, 5.4], look: [0, .4, 0], fov: 36, build() { mk(geos.boule, floury, 0, .58, 0, .4, 1.05); } },
+    heroGarage: { w: 1400, h: 640, cam: [4.4, 1.5, 6.6], look: [-.4, .85, 0], fov: 34, build() { car(0, 0, .3); } },
+    car2: { w: 520, h: 400, cam: [-6.4, 3, 6.4], look: [0, .9, 0], fov: 34, build() { car(0, 0, -.3); } },
+    wheel: { w: 520, h: 400, cam: [2.4, 2.2, 6.2], look: [0, 1.4, 0], fov: 34, build() { wheel(0, 1.53, 0, .45); } },
+    wrench: { w: 520, h: 400, cam: [0, 5.2, 4.4], look: [0, 0, 0], fov: 36, build() { wrench(0, -.3, .35); screwdriver(-.2, .9, -.25); } },
+    heroResto: { w: 1400, h: 640, cam: [0, 5.6, 9.2], look: [0, .9, 0], fov: 34, build() { plate(-.4, .4); burger(-.4, .4, .95); fries(-4.2, -.6, 1.1); pizza(4.2, -.4, .95); } },
+    burger: { w: 520, h: 400, cam: [0, 3.4, 6.2], look: [0, 1.0, 0], fov: 34, build() { plate(0, 0); burger(0, 0, 1); } },
+    pizza: { w: 520, h: 400, cam: [0, 6.2, 4.8], look: [0, 0, 0], fov: 38, build() { pizza(0, 0, 1); } },
+    fries: { w: 520, h: 400, cam: [0, 3.2, 6.0], look: [0, 1.4, 0], fov: 34, build() { fries(0, 0, 1.2); } },
+    heroArtisan: { w: 1400, h: 640, cam: [0, 4.4, 5.2], look: [-.4, 0, .3], fov: 36, build() { hammer(-2.4, .3, .4); wrench(1.6, -.6, -.3, .9); screwdriver(2.0, 1.3, .2); tapeMeasure(-4.6, -1.2, .6, .9); screwdriver(-.6, 1.8, -.1, .9); } },
+    hammer: { w: 520, h: 400, cam: [0, 4.6, 5.2], look: [0, 0, 0], fov: 36, build() { hammer(0, 0, .45); } },
+    screwdrivers: { w: 520, h: 400, cam: [0, 4.6, 4.6], look: [0, 0, 0], fov: 36, build() { screwdriver(0, -.6, .2); screwdriver(.1, 0, .15, .9); screwdriver(.2, .6, .1, .8); } },
+    tape: { w: 520, h: 400, cam: [1, 3.4, 4.8], look: [.6, .4, 0], fov: 36, build() { tapeMeasure(0, 0, .3); } },
     eclair: { w: 520, h: 400, cam: [0, 3.6, 4.6], look: [0, .3, 0], fov: 36, build() {
       mk(geos.eclair, glazed, 0, .3, .5, -.3, 1); mk(chocGeo, choc, 0, .62, .5, -.3, 1).scale.y = .4;
       mk(geos.eclair, glazed, .3, .3, -.9, -.25, 1); mk(chocGeo, choc, .3, .62, -.9, -.25, 1).scale.y = .4;

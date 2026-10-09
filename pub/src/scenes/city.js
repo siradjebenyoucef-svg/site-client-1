@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { T, clamp, lerp, prog, eOut, eOut5, eIn, eInOut, eBack, eExpo, eInExpo, smooth, spring, pulse, rng, noise1, GREEN_HEX } from '../timeline.js';
-import { croissant, roundRect } from '../icons.js';
+import { bag, roundRect } from '../icons.js';
 
 const P = 21, BLOCK = 14;               // pas de la grille et taille d'un îlot
 const SHOP_Z = -2;                      // façade de notre boutique
@@ -211,7 +211,7 @@ export function createCity(env) {
   const signTex = canvasTex(256, 256, (ctx, w, h) => {
     ctx.fillStyle = '#0c0c0c'; ctx.beginPath(); ctx.arc(w / 2, h / 2, w / 2 - 4, 0, Math.PI * 2); ctx.fill();
     ctx.strokeStyle = '#e9e9e9'; ctx.lineWidth = 10; ctx.beginPath(); ctx.arc(w / 2, h / 2, w / 2 - 14, 0, Math.PI * 2); ctx.stroke();
-    croissant(ctx, w / 2, h / 2 + 4, 150, '#e9e9e9');
+    bag(ctx, w / 2, h / 2 + 8, 128, '#e9e9e9', .11);
   });
   const sign = new THREE.Mesh(new THREE.CircleGeometry(.72, 48), new THREE.MeshStandardMaterial({ map: signTex, roughness: .5, side: THREE.DoubleSide, emissive: 0xffffff, emissiveMap: signTex, emissiveIntensity: 0 }));
   sign.position.set(4.55, 5.1, SHOP_Z + 1.25); sign.rotation.y = Math.PI / 2; shop.add(sign);

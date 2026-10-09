@@ -1,7 +1,16 @@
 // Le site de la boulangerie (version ordinateur et version mobile), dessiné au canvas
 // et animé élément par élément. Aucun mot lisible : pictogrammes, photos, blocs de texte.
 import { clamp, lerp, prog, eOut, eOut5, eBack, eInOut, eExpo, rng } from './timeline.js';
-import { roundRect, croissant, wheat, bag, cart, menu, magnifier, star, check, user, pin, fauxText } from './icons.js';
+import { roundRect, croissant, wheat, bag, cart, menu, magnifier, star, check, user, pin, fauxText, forkKnife, carIcon, hammerIcon } from './icons.js';
+
+// plusieurs métiers : chaque commerçant s'y reconnaît
+export const TRADES = {
+  garage: { hero: 'heroGarage', cards: ['car2', 'wheel', 'wrench', 'heroGarage'], icon: carIcon },
+  resto: { hero: 'heroResto', cards: ['burger', 'pizza', 'fries', 'eclair'], icon: forkKnife },
+  artisan: { hero: 'heroArtisan', cards: ['hammer', 'screwdrivers', 'tape', 'wrench'], icon: hammerIcon },
+  boulangerie: { hero: 'hero', cards: ['croissant', 'baguette', 'boule', 'eclair'], icon: croissant },
+};
+const FULL = { nav: 1, hero: 1, h1: 1, h2: 1, cta: 1, stars: 1, sec: 1, cards: [1, 1, 1, 1], info: 1 };
 
 const BG = '#f4f4f2', INK = '#0e0e0e', G1 = '#8e8e8e', G2 = '#d7d7d4', G3 = '#e9e9e6', GREEN = '#16ff6e';
 
@@ -14,9 +23,9 @@ function clipRound(ctx, x, y, w, h, r, fn) {
   ctx.save(); roundRect(ctx, x, y, w, h, r); ctx.clip(); fn(); ctx.restore();
 }
 function block(ctx, x, y, w, h, color) { ctx.fillStyle = color; roundRect(ctx, x, y, w, h, h / 2); ctx.fill(); }
-function emblem(ctx, cx, cy, r, bg, fg) {
+function emblem(ctx, cx, cy, r, bg, fg, icon = croissant) {
   ctx.fillStyle = bg; ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
-  croissant(ctx, cx, cy + r * .06, r * 1.25, fg);
+  icon(ctx, cx, cy + r * .06, r * 1.25, fg);
 }
 // apparition : opacité + glissement
 function appear(ctx, k, dy, fn) {
@@ -27,6 +36,23 @@ function grow(ctx, k, x, y, w, h, color) { if (k > 0) block(ctx, x, y, Math.max(
 
 // ---------------------------------------------------------------- ordinateur
 export function drawDesktop(ctx, W, H, s, ph) {
+  const cur = TRADES[s.trade || 'boulangerie'];
+  if (s.next && s.swipe > 0) {
+    // passage d'un métier à l'autre : la page glisse vers la gauche
+    const x = -W * eInOut(clamp(s.swipe));
+    ctx.save(); ctx.translate(x, 0); drawDesktopPage(ctx, W, H, s, ph, cur); ctx.restore();
+    ctx.save(); ctx.translate(x + W, 0); drawDesktopPage(ctx, W, H, { ...FULL, scroll: s.scroll, badge: s.badge }, ph, TRADES[s.next]); ctx.restore();
+  } else drawDesktopPage(ctx, W, H, s, ph, cur);
+  // reflet de lumière qui balaie l'écran
+  if (s.shine > 0 && s.shine < 1) {
+    const x = lerp(-600, W + 600, s.shine);
+    const gr = ctx.createLinearGradient(x - 220, 0, x + 220, 0);
+    gr.addColorStop(0, 'rgba(255,255,255,0)'); gr.addColorStop(.5, 'rgba(255,255,255,.55)'); gr.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.setTransform(1, 0, -.35, 1, 0, 0); ctx.fillStyle = gr; ctx.fillRect(x - 400, 0, 800 + H, H); ctx.restore();
+  }
+}
+
+function drawDesktopPage(ctx, W, H, s, ph, tr) {
   const R = rng(5);
   ctx.save();
   ctx.fillStyle = BG; ctx.fillRect(0, 0, W, H);
@@ -37,7 +63,7 @@ export function drawDesktop(ctx, W, H, s, ph) {
   appear(ctx, s.nav, -60, () => {
     ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, 92);
     ctx.fillStyle = G3; ctx.fillRect(0, 91, W, 1);
-    emblem(ctx, 70, 46, 26, INK, '#fff');
+    emblem(ctx, 70, 46, 26, INK, '#fff', tr.icon);
     block(ctx, 108, 34, 150, 15, INK); block(ctx, 108, 56, 96, 8, G1);
     [[560, 70], [660, 86], [776, 64], [870, 92]].forEach(([x, w]) => block(ctx, x, 41, w, 10, '#555'));
     magnifier(ctx, 1040, 46, 30, INK, .11);
@@ -52,7 +78,7 @@ export function drawDesktop(ctx, W, H, s, ph) {
     const k = eOut5(s.hero);
     ctx.save();
     ctx.beginPath(); ctx.rect(0, 92, W * k + 1, 468); ctx.clip();
-    cover(ctx, ph.hero, 0, 92, W, 468, 1.18 - .18 * k, .5, .55);
+    cover(ctx, ph[tr.hero], 0, 92, W, 468, 1.18 - .18 * k, .5, .55);
     const gr = ctx.createLinearGradient(0, 0, W * .75, 0);
     gr.addColorStop(0, 'rgba(0,0,0,.78)'); gr.addColorStop(.55, 'rgba(0,0,0,.35)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = gr; ctx.fillRect(0, 92, W, 468);
@@ -72,7 +98,7 @@ export function drawDesktop(ctx, W, H, s, ph) {
 
   // produits
   appear(ctx, s.sec, 30, () => { block(ctx, W / 2 - 130, 600, 260, 22, INK); ctx.fillStyle = GREEN; ctx.fillRect(W / 2 - 30, 636, 60, 5); });
-  const prods = ['croissant', 'baguette', 'boule', 'eclair'];
+  const prods = tr.cards;
   prods.forEach((p, i) => {
     const k = s.cards ? s.cards[i] : 0;
     appear(ctx, k, 80, () => {
@@ -94,18 +120,11 @@ export function drawDesktop(ctx, W, H, s, ph) {
     [[220, pin], [720, user], [1220, star]].forEach(([x, f]) => { f(ctx, x - 70, 1090, 46, GREEN); block(ctx, x - 30, 1074, 160, 14, '#fff'); block(ctx, x - 30, 1098, 110, 10, '#777'); });
   });
   ctx.restore();
-
-  // reflet de lumière qui balaie l'écran
-  if (s.shine > 0 && s.shine < 1) {
-    const x = lerp(-600, W + 600, s.shine);
-    const gr = ctx.createLinearGradient(x - 220, 0, x + 220, 0);
-    gr.addColorStop(0, 'rgba(255,255,255,0)'); gr.addColorStop(.5, 'rgba(255,255,255,.55)'); gr.addColorStop(1, 'rgba(255,255,255,0)');
-    ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.setTransform(1, 0, -.35, 1, 0, 0); ctx.fillStyle = gr; ctx.fillRect(x - 400, 0, 800 + H, H); ctx.restore();
-  }
 }
 
 // ---------------------------------------------------------------- mobile
 export function drawMobile(ctx, W, H, s, ph) {
+  const tr = TRADES[s.trade || 'resto'];
   ctx.save();
   ctx.fillStyle = BG; ctx.fillRect(0, 0, W, H);
   const sc = s.scroll || 0;
@@ -115,7 +134,7 @@ export function drawMobile(ctx, W, H, s, ph) {
   if (s.hero > 0) {
     const k = eOut5(s.hero);
     ctx.save(); ctx.beginPath(); ctx.rect(0, 150, W, 620 * k); ctx.clip();
-    cover(ctx, ph.hero, 0, 150, W, 620, 1.25 - .15 * k, .42, .5);
+    cover(ctx, ph[tr.hero], 0, 150, W, 620, 1.25 - .15 * k, .42, .5);
     const gr = ctx.createLinearGradient(0, 150, 0, 770);
     gr.addColorStop(0, 'rgba(0,0,0,.1)'); gr.addColorStop(.45, 'rgba(0,0,0,.25)'); gr.addColorStop(1, 'rgba(0,0,0,.85)');
     ctx.fillStyle = gr; ctx.fillRect(0, 150, W, 620); ctx.restore();
@@ -129,11 +148,11 @@ export function drawMobile(ctx, W, H, s, ph) {
   }
   // catégories
   appear(ctx, s.chips, 30, () => {
-    block(ctx, 32, 800, 150, 52, GREEN); croissant(ctx, 72, 828, 44, INK); block(ctx, 98, 821, 64, 10, INK);
+    block(ctx, 32, 800, 150, 52, GREEN); tr.icon(ctx, 72, 828, 44, INK); block(ctx, 98, 821, 64, 10, INK);
     [[200, 160], [380, 150], [550, 160]].forEach(([x, w]) => { ctx.strokeStyle = G2; ctx.lineWidth = 3; roundRect(ctx, x, 800, w, 52, 26); ctx.stroke(); block(ctx, x + 30, 821, w - 60, 10, G1); });
   });
   // liste de produits
-  ['croissant', 'baguette', 'boule', 'eclair'].forEach((p, i) => {
+  tr.cards.forEach((p, i) => {
     const k = s.cards ? s.cards[i] : 0;
     appear(ctx, k, 70, () => {
       const y = 890 + i * 222;
@@ -157,7 +176,7 @@ export function drawMobile(ctx, W, H, s, ph) {
     for (let i = 0; i < 4; i++) { ctx.fillStyle = INK; ctx.fillRect(W - 150 + i * 12, 44 - i * 5, 8, 10 + i * 5); }
     ctx.strokeStyle = INK; ctx.lineWidth = 3; roundRect(ctx, W - 92, 32, 46, 24, 6); ctx.stroke(); ctx.fillStyle = INK; ctx.fillRect(W - 87, 37, 30, 14);
     menu(ctx, 64, 108, 44, INK);
-    emblem(ctx, W / 2, 106, 30, INK, '#fff');
+    emblem(ctx, W / 2, 106, 30, INK, '#fff', tr.icon);
     bag(ctx, W - 66, 106, 42, INK, .1);
     const bp = s.badge || 0;
     if (bp > 0) { ctx.fillStyle = GREEN; ctx.beginPath(); ctx.arc(W - 46, 88, 13 * eBack(clamp(bp), 3), 0, Math.PI * 2); ctx.fill(); }

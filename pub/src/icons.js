@@ -167,3 +167,34 @@ export function fauxText(ctx, x, y, width, lineH, lines, color, rnd, opts = {}) 
     }
   }
 }
+
+// couverts (restaurant)
+export function forkKnife(ctx, cx, cy, s, color) {
+  ctx.save(); ctx.translate(cx, cy); ctx.fillStyle = color; ctx.strokeStyle = color; ctx.lineCap = 'round';
+  ctx.lineWidth = s * .07;
+  for (const dx of [-.2, -.12, -.04]) { ctx.beginPath(); ctx.moveTo(dx * s - s * .04, -s * .38); ctx.lineTo(dx * s - s * .04, -s * .12); ctx.stroke(); }
+  ctx.beginPath(); ctx.moveTo(-s * .16, -s * .12); ctx.lineTo(-s * .16, s * .4); ctx.stroke();
+  ctx.lineWidth = s * .08;
+  ctx.beginPath(); ctx.moveTo(-s * .24, -s * .14); ctx.quadraticCurveTo(-s * .16, -s * .02, -s * .08, -s * .14); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(s * .18, -s * .4); ctx.quadraticCurveTo(s * .34, -s * .2, s * .2, s * .02); ctx.lineTo(s * .18, s * .02); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(s * .19, -s * .02); ctx.lineTo(s * .19, s * .4); ctx.stroke();
+  ctx.restore();
+}
+// voiture (garage)
+export function carIcon(ctx, cx, cy, s, color) {
+  ctx.save(); ctx.translate(cx, cy); ctx.fillStyle = color;
+  roundRect(ctx, -s * .44, -s * .02, s * .88, s * .22, s * .07); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(-s * .26, -s * .02); ctx.lineTo(-s * .16, -s * .2); ctx.lineTo(s * .16, -s * .2); ctx.lineTo(s * .28, -s * .02); ctx.closePath(); ctx.fill();
+  ctx.globalCompositeOperation = 'destination-out';
+  ctx.beginPath(); ctx.arc(-s * .24, s * .2, s * .11, 0, Math.PI * 2); ctx.arc(s * .24, s * .2, s * .11, 0, Math.PI * 2); ctx.fill();
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.beginPath(); ctx.arc(-s * .24, s * .2, s * .08, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.arc(s * .24, s * .2, s * .08, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
+}
+// marteau (artisan)
+export function hammerIcon(ctx, cx, cy, s, color) {
+  ctx.save(); ctx.translate(cx, cy); ctx.rotate(-.7); ctx.fillStyle = color;
+  roundRect(ctx, -s * .05, -s * .2, s * .1, s * .62, s * .04); ctx.fill();
+  roundRect(ctx, -s * .26, -s * .34, s * .52, s * .16, s * .04); ctx.fill();
+  ctx.restore();
+}

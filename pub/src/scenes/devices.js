@@ -105,8 +105,16 @@ export async function createDevices(env, renderer) {
 
   // ---------- état du site selon le temps ----------
   const tU = T.un, tPro = T.pro, tMod = T.moderne, tVend = T.vendre;
+  // l'ordinateur enchaîne les métiers : garage, restaurant, artisan, boulangerie
+  const SW = [[tPro + .22, 'garage', 'resto'], [tMod + .08, 'resto', 'artisan'], [T.pret - .1, 'artisan', 'boulangerie']];
   function deskState(t) {
+    let trade = 'garage', next = null, swipe = 0;
+    for (const [t0, a, b] of SW) {
+      if (t >= t0 + .24) trade = b;
+      else if (t >= t0) { trade = a; next = b; swipe = (t - t0) / .24; }
+    }
     return {
+      trade, next, swipe,
       nav: prog(t, tU + .02, tU + .22),
       hero: prog(t, T.site3 - .02, T.site3 + .34),
       h1: prog(t, T.site3 + .2, T.site3 + .42), h2: prog(t, T.site3 + .28, T.site3 + .5),
@@ -121,10 +129,12 @@ export async function createDevices(env, renderer) {
     };
   }
   function mobState(t) {
+    const trade = 'resto';
     const tapT = T.a + .06;
     const tx = lerp(560, 430, eInOut(prog(t, T.pret, tapT)));
     const ty = lerp(1150, 1462, eInOut(prog(t, T.pret, tapT)));
     return {
+      trade,
       nav: prog(t, tMod - .02, tMod + .2),
       hero: prog(t, tMod, tMod + .3),
       h1: prog(t, tMod + .14, tMod + .34), h2: prog(t, tMod + .2, tMod + .4),
