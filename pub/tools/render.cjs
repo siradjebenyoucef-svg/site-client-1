@@ -31,10 +31,11 @@ function serve() {
 async function open() {
   const srv = await serve();
   const browser = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--disable-gpu-vsync'] });
-  const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 });
+  const PREVIEW = !!process.env.PREVIEW;
+  const page = await browser.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: PREVIEW ? .5 : 1 });
   page.on('console', m => { const x = m.text(); if (!/GPU stall|GL Driver/.test(x)) console.log('[page]', x); });
   page.on('pageerror', e => console.log('[pageerror]', e.message));
-  await page.goto(`http://localhost:${srv.address().port}/index.html`);
+  await page.goto(`http://localhost:${srv.address().port}/index.html${PREVIEW ? '?preview' : ''}`);
   await page.waitForFunction(() => window.ready || window.bootError, null, { timeout: 120000 });
   const err = await page.evaluate(() => window.bootError);
   if (err) { console.error(err); process.exit(1); }

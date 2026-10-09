@@ -19,8 +19,11 @@ async function boot() {
 
   const canvas = document.getElementById('gl');
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, preserveDrawingBuffer: true, powerPreference: 'high-performance' });
+  // ?preview : aperçu rapide en demi-résolution (même cadrage)
+  const PREVIEW = new URLSearchParams(location.search).has('preview');
+  const RW = PREVIEW ? W / 2 : W, RH = PREVIEW ? H / 2 : H;
   renderer.setPixelRatio(1);
-  renderer.setSize(W, H, false);
+  renderer.setSize(RW, RH, false);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.toneMapping = THREE.NoToneMapping;
@@ -28,7 +31,7 @@ async function boot() {
   const pmrem = new THREE.PMREMGenerator(renderer);
   const env = pmrem.fromScene(new RoomEnvironment(), .04).texture;
 
-  const post = new Post(renderer, W, H);
+  const post = new Post(renderer, RW, RH);
   const city = createCity(env);
   const mods = await Promise.all([
     import('./scenes/key.js').catch(() => null),
