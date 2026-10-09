@@ -46,7 +46,7 @@ def main():
         vi = len(inputs) - 1
         # voix : nettoyage léger, compression douce, puis niveau de référence
         parts.append(f'[{vi}:a]aresample=48000,aformat=channel_layouts=stereo,highpass=f=80,'
-                     'acompressor=threshold=0.1:ratio=3:attack=5:release=120:makeup=1.6,asplit=3[voice][key1][key2]')
+                     'acompressor=threshold=0.1:ratio=3:attack=5:release=120:makeup=1.6,apad,asplit=3[voice][key1][key2]')
         parts.append('[sfx0][key1]sidechaincompress=threshold=0.04:ratio=5:attack=4:release=220[sfx]')
         mixlabels.append('[voice]')
     else:
