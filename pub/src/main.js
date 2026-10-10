@@ -150,7 +150,7 @@ async function boot() {
     const D = window.DBG || {};
     grain.style.display = D.noGrain ? 'none' : '';
     typeRoot.style.display = D.noType ? 'none' : '';
-    if (!D.noGrain) drawGrain(frame);
+    void drawGrain;
   };
 
   window.DURATION = DURATION; // (mis à jour par setWords si timings.json est présent)

@@ -25,7 +25,7 @@ export async function createDevices(env, renderer) {
   const R = rng(17);
 
   // ---------- studio ----------
-  const floor = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.MeshPhysicalMaterial({ color: 0x040404, roughness: .4, metalness: .2, clearcoat: .5, clearcoatRoughness: .35, envMapIntensity: .5 }));
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.MeshPhysicalMaterial({ color: 0x010101, roughness: .55, metalness: 0, clearcoat: .15, clearcoatRoughness: .5, envMapIntensity: .04 }));
   floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
   const key = new THREE.DirectionalLight(0xffffff, 1.6); key.position.set(-8, 16, 10); key.castShadow = true;
   key.shadow.mapSize.set(2048, 2048); Object.assign(key.shadow.camera, { left: -16, right: 16, top: 16, bottom: -16, near: 1, far: 60 });
@@ -48,21 +48,21 @@ export async function createDevices(env, renderer) {
   const halo = new THREE.Mesh(new THREE.PlaneGeometry(30, 20), haloMat); halo.position.set(-1, 7, -16); scene.add(halo);
 
   // ---------- ordinateur portable ----------
-  const alu = new THREE.MeshPhysicalMaterial({ color: 0x2c2d2f, metalness: .85, roughness: .32, envMapIntensity: 1.2 });
+  const alu = new THREE.MeshPhysicalMaterial({ color: 0x0c0c0d, metalness: .7, roughness: .28, envMapIntensity: 1.0 });
   const black = new THREE.MeshPhysicalMaterial({ color: 0x050505, metalness: .2, roughness: .12, clearcoat: 1, envMapIntensity: 1 });
   const laptop = new THREE.Group(); scene.add(laptop);
   const base = new THREE.Mesh(new RoundedBoxGeometry(14, .42, 9.6, 6, .2), alu); base.position.y = .21; base.castShadow = true; base.receiveShadow = true; laptop.add(base);
   const kbTex = (() => {
     const c = document.createElement('canvas'); c.width = 1024; c.height = 560; const ctx = c.getContext('2d');
-    ctx.fillStyle = '#1d1e20'; ctx.fillRect(0, 0, 1024, 560);
+    ctx.fillStyle = '#070707'; ctx.fillRect(0, 0, 1024, 560);
     const rows = [14, 14, 13, 12, 11];
-    rows.forEach((n, r) => { const kw = 1024 / 14.6; for (let i = 0; i < n; i++) { const w = (r === 4 && i === 5) ? kw * 4 : kw - 8; const x = 18 + i * kw + (14 - n) * kw / 2; ctx.fillStyle = '#0b0b0c'; roundRect(ctx, x, 20 + r * 76, w - 6, 66, 9); ctx.fill(); } });
+    rows.forEach((n, r) => { const kw = 1024 / 14.6; for (let i = 0; i < n; i++) { const w = (r === 4 && i === 5) ? kw * 4 : kw - 8; const x = 18 + i * kw + (14 - n) * kw / 2; ctx.fillStyle = '#000'; roundRect(ctx, x, 20 + r * 76, w - 6, 66, 9); ctx.fill(); ctx.strokeStyle = '#1c1c1c'; ctx.lineWidth = 2; ctx.stroke(); } });
     ctx.fillStyle = '#2a2b2d'; roundRect(ctx, 330, 410 + 200, 360, 140, 14);
     const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
   })();
   const kb = new THREE.Mesh(new THREE.PlaneGeometry(12.2, 4.4), new THREE.MeshStandardMaterial({ map: kbTex, roughness: .7 }));
   kb.rotation.x = -Math.PI / 2; kb.position.set(0, .425, -1.6); laptop.add(kb);
-  const pad = new THREE.Mesh(new THREE.PlaneGeometry(4.6, 2.9), new THREE.MeshPhysicalMaterial({ color: 0x343538, roughness: .25, metalness: .6 }));
+  const pad = new THREE.Mesh(new THREE.PlaneGeometry(4.6, 2.9), new THREE.MeshPhysicalMaterial({ color: 0x0a0a0a, roughness: .25, metalness: .5 }));
   pad.rotation.x = -Math.PI / 2; pad.position.set(0, .426, 2.75); laptop.add(pad);
   const lid = new THREE.Group(); lid.position.set(0, .42, -4.75); laptop.add(lid);
   const lidBody = new THREE.Mesh(new RoundedBoxGeometry(14, 9.3, .26, 6, .12), alu); lidBody.position.set(0, 4.65, -.13); lidBody.castShadow = true; lid.add(lidBody);
@@ -75,7 +75,7 @@ export async function createDevices(env, renderer) {
 
   // ---------- téléphone ----------
   const phone = new THREE.Group(); scene.add(phone);
-  const frameMat = new THREE.MeshPhysicalMaterial({ color: 0x9a9a9a, metalness: 1, roughness: .22, envMapIntensity: 1.4 });
+  const frameMat = new THREE.MeshPhysicalMaterial({ color: 0xf0f0f0, metalness: 1, roughness: .2, envMapIntensity: 1.4 });
   const body = new THREE.Mesh(new RoundedBoxGeometry(3.7, 7.7, .4, 8, .5), frameMat); body.castShadow = true; phone.add(body);
   const front = new THREE.Mesh(new RoundedBoxGeometry(3.62, 7.62, .42, 8, .48), black); phone.add(front);
   const mob = canvasTexture(720, 1560);

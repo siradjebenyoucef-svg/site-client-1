@@ -114,10 +114,14 @@ const FinalShader = {
       float n = hash(vec3(gl_FragCoord.xy, frame)) - .5;
       col += n * grain * (.35 + .65 * (1. - smoothstep(0., .8, dot(col, vec3(.333)))));
       col = max(col, vec3(blackLevel));
+      // étalonnage : les gris très sombres deviennent noirs (palette noir / blanc / vert)
+      col = max(col - .011, 0.) / (1. - .011);
       // conversion linéaire -> sRGB (remplace la passe de sortie)
       col = clamp(col, 0., 1.);
       vec3 lo = col * 12.92, hi = 1.055 * pow(col, vec3(1. / 2.4)) - .055;
       col = mix(lo, hi, step(vec3(.0031308), col));
+      // contraste en S
+      col = mix(col, col * col * (3. - 2. * col), .35);
       gl_FragColor = vec4(col, 1.);
     }`,
 };

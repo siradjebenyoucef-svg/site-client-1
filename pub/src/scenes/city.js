@@ -77,11 +77,11 @@ export function createCity(env) {
   scene.add(moon, moon.target);
 
   // ---------- sol, rues, îlots ----------
-  const ground = new THREE.Mesh(new THREE.PlaneGeometry(600, 600), new THREE.MeshStandardMaterial({ color: 0x0b0b0b, roughness: .55, metalness: 0 }));
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(600, 600), new THREE.MeshStandardMaterial({ color: 0x030303, roughness: .6, metalness: 0 }));
   ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
 
-  const slabMat = new THREE.MeshStandardMaterial({ color: 0x2a2a2a, roughness: .95 });
-  const clay = new THREE.MeshStandardMaterial({ color: 0xd2d2d2, roughness: .9 });
+  const slabMat = new THREE.MeshStandardMaterial({ color: 0x0e0e0e, roughness: .95 });
+  const clay = new THREE.MeshStandardMaterial({ color: 0xeeeeee, roughness: .9 });
   const dark = new THREE.MeshStandardMaterial({ color: 0x141414, roughness: .55, metalness: .1 });
   const winMat = windowMaterial(uniforms);
 
@@ -99,7 +99,7 @@ export function createCity(env) {
   const dashes = [];
   for (let j = -5; j <= 2; j++) for (let x = -80; x <= 80; x += 3.2) dashes.push([x, j * P + 3.5, 0]);
   for (let i = -3; i <= 3; i++) for (let z = -115; z <= 50; z += 3.2) dashes.push([i * P + 10.5, z, 1]);
-  const dashMesh = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshStandardMaterial({ color: 0x6a6a6a, roughness: .7 }), dashes.length);
+  const dashMesh = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshBasicMaterial({ color: 0x9a9a9a }), dashes.length);
   dashes.forEach(([x, z, v], k) => {
     mtx.compose(new THREE.Vector3(x, .012, z), new THREE.Quaternion(), v ? new THREE.Vector3(.16, .02, 1.4) : new THREE.Vector3(1.4, .02, .16));
     dashMesh.setMatrixAt(k, mtx);
@@ -155,7 +155,7 @@ export function createCity(env) {
   const add = (geo, mat, x, y, z, parent = shop) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.castShadow = true; m.receiveShadow = true; parent.add(m); return m; };
   const box = (w, h, d, mat, x, y, z, parent) => add(new THREE.BoxGeometry(w, h, d), mat, x, y, z, parent);
 
-  const shopClay = new THREE.MeshStandardMaterial({ color: 0x7c7c7c, roughness: .9 }); // notre immeuble : éteint, plus sombre que la ville
+  const shopClay = new THREE.MeshStandardMaterial({ color: 0x151515, roughness: .75 }); // notre immeuble : noir, éteint
   box(10, 9.4, 6, shopClay, 0, 4.86, SHOP_Z - 3);            // corps du bâtiment
   box(10, 6, 4, winMat, 0, 3.16 + 9.4, SHOP_Z - 7.5);         // immeuble derrière
   const panel = new THREE.MeshStandardMaterial({ color: 0x101010, roughness: .45, metalness: .2 });
@@ -169,7 +169,7 @@ export function createCity(env) {
   screen.position.set(-1.7, 1.95, SHOP_Z + .27); shop.add(screen);
   const glass = new THREE.Mesh(new THREE.PlaneGeometry(5.2, 2.6), new THREE.MeshPhysicalMaterial({ color: 0x000000, roughness: .06, metalness: 0, transparent: true, opacity: .35, envMapIntensity: 1.2 }));
   glass.position.set(-1.7, 1.95, SHOP_Z + .29); shop.add(glass);
-  const frameMat = new THREE.MeshStandardMaterial({ color: 0xe8e8e8, roughness: .6 });
+  const frameMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: .5, emissive: 0xffffff, emissiveIntensity: .08 });
   for (const [w, h, x, y] of [[5.5, .14, -1.7, .58], [5.5, .14, -1.7, 3.32], [.14, 2.85, -4.38, 1.95], [.14, 2.85, .98, 1.95], [.08, 2.6, -1.7, 1.95]])
     box(w, h, .12, frameMat, x, y, SHOP_Z + .3);
   // porte + serrure
@@ -194,13 +194,13 @@ export function createCity(env) {
     box(1.5, .12, .14, frameMat, x, y + .95, SHOP_Z + .07);
   }
   // store rayé
-  const awnTex = canvasTex(512, 64, (ctx, w, h) => { for (let i = 0; i < 16; i++) { ctx.fillStyle = i % 2 ? '#0d0d0d' : '#bdbdbd'; ctx.fillRect(i * w / 16, 0, w / 16 + 1, h); } });
+  const awnTex = canvasTex(512, 64, (ctx, w, h) => { for (let i = 0; i < 16; i++) { ctx.fillStyle = i % 2 ? '#0a0a0a' : '#f4f4f4'; ctx.fillRect(i * w / 16, 0, w / 16 + 1, h); } });
   const awnMat = new THREE.MeshStandardMaterial({ map: awnTex, roughness: .8, side: THREE.DoubleSide });
   const awn = new THREE.Mesh(new THREE.PlaneGeometry(8.6, 1.9), awnMat);
   awn.position.set(-.45, 3.55, SHOP_Z + 1.0); awn.rotation.x = -1.05; awn.castShadow = true; shop.add(awn);
   const valTex = canvasTex(512, 64, (ctx, w, h) => {
     for (let i = 0; i < 16; i++) {
-      ctx.fillStyle = i % 2 ? '#0d0d0d' : '#bdbdbd';
+      ctx.fillStyle = i % 2 ? '#0a0a0a' : '#f4f4f4';
       ctx.beginPath(); ctx.moveTo(i * w / 16, 0); ctx.lineTo((i + 1) * w / 16, 0); ctx.lineTo((i + 1) * w / 16, h * .55);
       ctx.arc((i + .5) * w / 16, h * .55, w / 32, 0, Math.PI); ctx.closePath(); ctx.fill();
     }
