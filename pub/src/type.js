@@ -174,9 +174,11 @@ export class Stack {
     for (const l of this.lines) {
       const yc = l.y + scroll;
       l.el.style.top = (yc - l.cfg.size * .5) + 'px';
+      // une ligne poussée vers le haut disparaît franchement (pas de texte gris qui traîne)
       const top = c.fadeTop ?? 300;
-      const vis = smooth(clamp((yc - (top - 120)) / 120));
+      const vis = smooth(clamp((yc - (top - 30)) / 30));
       l.el.style.opacity = vis;
+      l.el.style.visibility = vis < .01 ? 'hidden' : '';
       l.update(t);
     }
   }
